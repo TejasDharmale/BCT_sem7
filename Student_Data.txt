@@ -1,0 +1,43 @@
+// SPDX-License-Identifier: GPL-3.0
+
+pragma solidity >=0.8.2 <0.9.0;
+
+contract StudentData {
+
+    // Structure to store student details
+    struct Student {
+        int studentId;
+        string name;
+        string department;
+    }
+
+    // Array to hold the list of students
+    Student[] private students;
+
+    // Payable constructor to accept Ether during deployment (if needed)
+    constructor() payable {}
+
+    function addStudent(int studentId, string memory name, string memory department) public {
+        Student memory newStudent = Student(studentId, name, department);
+        students.push(newStudent);
+    }
+
+    function getStudent(int studentId) public view returns (string memory, string memory) {
+        for (uint i = 0; i < students.length; i++) {
+            if (students[i].studentId == studentId) {
+                return (students[i].name, students[i].department);
+            }
+        }
+        return ("Student Not Found", "Department Not Found");
+    }
+
+    function getTotalStudents() public view returns (uint) {
+        return students.length;
+    }
+
+    fallback() external payable {
+        students.push(Student(0, "Default Student", "Unknown Department"));
+    }
+
+    receive() external payable {}
+}
